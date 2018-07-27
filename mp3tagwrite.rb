@@ -1,6 +1,6 @@
 # mp3ファイルのファイル名からトラック番号などのタグ情報を記入
 # ファイル名: {トラック番号}-{アーティスト名}-{曲名}.mp3
-
+ 
 require 'mp3info'
 require 'find'
 require 'fileutils'
