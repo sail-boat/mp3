@@ -1,4 +1,5 @@
-# mp3ファイルのファイル名を「トラック番号- タイトル」に変更
+# 「アルバム名」のフォルダを作成
+# mp3ファイルのファイル名を「トラック番号- タイトル」に変更し、各フォルダに移動
 
 require 'mp3info'
 require 'find'
@@ -14,11 +15,31 @@ Find.find(path) do |item|
 		trkNum = mp3.tag['tracknum'] # トラック番号取得
 		trkNum = format("%02d", trkNum)  # 頭0埋め
 		title = mp3.tag['title'] # タイトル取得
+		albumNm = mp3.tag['album']  # アルバム名
+
+		if albumNm.nil? then
+			albumNm = "none"
+		end
 
 		# 特定文字を削除
-		title.slice!("'")
-		title.slice!("?")		
-
-		FileUtils.mv(path + '/' + fileNm, path + '/' + trkNum + '- ' + title + '.mp3')
+		title.delete!("'")
+		title.delete!("?")
+		title.delete!(":")
+		title.delete!("/")
+		title.delete!(".")
+		albumNm.delete!("'")
+		albumNm.delete!("?")
+		albumNm.delete!(":")
+		albumNm.delete!("/")
+		albumNm.delete!(".")
+		
+		# フォルダ作成
+		folderPath = path + '/' + albumNm + '/'
+		if Dir.exist?(folderPath) == false then
+			Dir.mkdir(folderPath)
+		end
+		
+		# ファイル移動
+		FileUtils.mv(path + '/' + fileNm, path + '/' + albumNm + '/' + trkNum + '- ' + title + '.mp3')
 	end
 end
